@@ -1,4 +1,6 @@
 import { Header } from '@/components';
+import FilterSheet from '@/features/rank/components/FilterSheet';
+import { useBottomSheetStore } from '@/store/commonStore';
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import { router, Tabs } from 'expo-router';
 import React from 'react';
@@ -9,6 +11,7 @@ function Icon(props: { name: React.ComponentProps<typeof FontAwesome>['name']; c
 }
 
 export default function TabLayout() {
+  const open = useBottomSheetStore((s) => s.open);
   return (
     <Tabs
       screenOptions={{
@@ -95,7 +98,7 @@ export default function TabLayout() {
                 <Pressable onPress={() => router.push('/(main)/notification')}>
                   <Ionicons name="notifications-outline" size={26} color="white" />
                 </Pressable>,
-                <Pressable onPress={() => console.log('필터')}>
+                <Pressable onPress={() => open(<FilterSheet />)}>
                   <Ionicons name="options-outline" size={26} color="white" />
                 </Pressable>,
               ]}

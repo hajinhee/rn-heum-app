@@ -42,12 +42,6 @@ export default function AuthScreen() {
           <MaterialCommunityIcons name="google" size={20} color="#000" />
           <Text style={styles.buttonText}>구글로 시작하기</Text>
         </TouchableOpacity>
-
-        {/* Apple */}
-        <TouchableOpacity style={styles.button} onPress={() => handleLogin('Apple')}>
-          <MaterialCommunityIcons name="apple" size={20} color="#000" />
-          <Text style={styles.buttonText}>애플로 시작하기</Text>
-        </TouchableOpacity>
       </View>
     </ScrollView>
   );

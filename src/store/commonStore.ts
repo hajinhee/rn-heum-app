@@ -1,17 +1,18 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ReactNode } from 'react';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
 interface BottomSheetState {
-  index: number; // -1: 닫힘, 0~이상: 열림 위치
-  content: React.ReactNode | null;
+  index: number;
+  contentStack: ReactNode[];
 }
 
 interface BottomSheetActions {
-  open: (content: React.ReactNode, index?: number) => void;
+  open: (node) => void;
+  goBack: () => void;
   close: () => void;
 }
-
 /**
  * 전역 BottomSheet 상태 관리용 Zustand 스토어 훅
  *
@@ -29,11 +30,32 @@ interface BottomSheetActions {
  *    └ `index` 기본값은 0 (snapPoints[0])
  * - `close()`: 시트를 닫고, 내용(`content`)을 초기화
  */
-export const useBottomSheetStore = create<BottomSheetState & BottomSheetActions>((set) => ({
+export const useBottomSheetStore = create<BottomSheetState & BottomSheetActions>((set, get) => ({
   index: -1,
-  content: null,
-  open: (content, index = 0) => set({ content, index }),
-  close: () => set({ index: -1, content: null }),
+  contentStack: [],
+
+  open: (node, index = 0) => {
+    const prev = get().contentStack;
+    set({
+      contentStack: [...prev, node],
+      index,
+    });
+  },
+
+  goBack: () => {
+    const prev = get().contentStack;
+    // 1개 남으면 그냥 닫기
+    if (prev.length <= 1) {
+      set({ index: -1, contentStack: [] });
+      return;
+    }
+
+    // 맨 마지막만 제거하고 이전 화면으로 돌아감
+    const newStack = prev.slice(0, prev.length - 1);
+    set({ contentStack: newStack });
+  },
+
+  close: () => set({ index: -1, contentStack: [] }),
 }));
 
 interface AlertState {

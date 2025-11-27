@@ -18,14 +18,14 @@ export default function RankLayout() {
   ]);
 
   const initialIndex = routes.findIndex((r) => r.path === pathname) || 0;
-  const [index, setIndex] = useState(initialIndex);
+  const [sheetIndex, setSheetIndex] = useState(initialIndex);
 
   useEffect(() => {
     const current = routes.findIndex((r) => r.path === pathname);
-    if (current !== -1 && index !== current) {
-      setIndex(current);
+    if (current !== -1 && sheetIndex !== current) {
+      setSheetIndex(current);
     }
-  }, [pathname, routes, index]);
+  }, [pathname, routes, sheetIndex]);
 
   const renderScene = ({ route }: { route: any }) => {
     switch (route.key) {
@@ -46,7 +46,7 @@ export default function RankLayout() {
   return (
     <TabView
       lazy
-      navigationState={{ index, routes }}
+      navigationState={{ index: sheetIndex, routes }}
       renderScene={renderScene}
       onIndexChange={handleIndexChange}
       initialLayout={{ width: layout.width }}
@@ -54,7 +54,7 @@ export default function RankLayout() {
         <View style={styles.segmentedControlWrapper}>
           <SegmentedControl
             options={routes.map((r) => r.title)}
-            selectedIndex={index}
+            selectedIndex={sheetIndex}
             position={props.position}
             alphaValue={0.3}
             activeTextColor={'#4285EA'}

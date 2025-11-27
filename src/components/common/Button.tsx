@@ -55,24 +55,24 @@ const styles = StyleSheet.create({
   base: {
     paddingVertical: 15,
     borderRadius: 14,
+    // borderRadius: 10,
+    // paddingVertical: 12,
     alignItems: 'center',
     justifyContent: 'center',
-    width: '100%',
   },
-
   baseText: {
-    fontSize: 16,
     fontWeight: '600',
+    fontSize: 15,
   },
-
   /* Filled (파란 배경) */
   filled: {
     backgroundColor: '#4285EA',
   },
   filledText: {
     color: '#FFFFFF',
+    fontWeight: '600',
+    fontSize: 15,
   },
-
   /* Outline */
   outline: {
     borderWidth: 1,
@@ -81,13 +81,16 @@ const styles = StyleSheet.create({
   },
   outlineText: {
     color: '#4285EA',
+    fontWeight: '600',
+    fontSize: 15,
   },
-
   /* Gray */
   gray: {
-    backgroundColor: '#E8E8E8',
+    backgroundColor: '#F3F3F3',
   },
   grayText: {
-    color: '#000000',
+    color: '#333',
+    fontWeight: '600',
+    fontSize: 15,
   },
 });
