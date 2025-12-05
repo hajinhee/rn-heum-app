@@ -1,15 +1,6 @@
 import * as Haptics from 'expo-haptics';
 import React, { useEffect, useRef, useState } from 'react';
-import {
-  Animated,
-  Dimensions,
-  Easing,
-  Modal,
-  Pressable,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-} from 'react-native';
+import { Animated, Dimensions, Easing, Modal, Pressable, StyleSheet, Text } from 'react-native';
 
 export interface Action {
   label: string;
@@ -109,19 +100,18 @@ export const ActionSheet: React.FC<Props> = ({ visible, onClose, actions }) => {
           ]}
         >
           {actions.map((action, idx) => (
-            <TouchableOpacity
+            <Pressable
               key={idx}
               style={styles.button}
               onPress={() => {
                 onClose();
                 setTimeout(action.onPress, 150);
               }}
-              activeOpacity={0.7}
             >
               <Text style={[styles.label, action.destructive && styles.destructive]}>
                 {action.label}
               </Text>
-            </TouchableOpacity>
+            </Pressable>
           ))}
         </Animated.View>
       </Pressable>

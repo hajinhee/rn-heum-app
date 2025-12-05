@@ -1,13 +1,27 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
-import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useLoginMutation } from '@/hooks/queries/useAuthMutations';
+import * as KakaoLogin from '@react-native-seoul/kakao-login';
+
+import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 export default function AuthScreen() {
-  const router = useRouter();
+  const loginMutation = useLoginMutation();
 
-  const handleLogin = (type: string) => {
-    console.log(`${type} 로그인`);
-    router.replace('/(tabs)');
+  const handleLogin = async (provider: string) => {
+    console.log(`${provider} 로그인`);
+
+    if (provider === 'KAKAO') {
+      try {
+        const result = await KakaoLogin.login();
+        const accessToken = result.accessToken;
+
+        loginMutation.mutate({
+          provider: 'KAKAO',
+          socialToken: accessToken,
+        });
+      } catch (e) {
+        console.error('카카오 로그인 실패:', e);
+      }
+    }
   };
 
   return (
@@ -26,22 +40,34 @@ export default function AuthScreen() {
 
       <View style={styles.buttonGroup}>
         {/* Naver */}
-        <TouchableOpacity style={styles.button} onPress={() => handleLogin('Naver')}>
-          <MaterialCommunityIcons name="alpha-n-box" size={20} color="#000" />
-          <Text style={styles.buttonText}>네이버로 시작하기</Text>
-        </TouchableOpacity>
+        <Pressable
+          style={[styles.snsButton, { backgroundColor: '#03C75A' }]}
+          onPress={() => handleLogin('NAVER')}
+        >
+          <Image source={require('@/assets/images/naver_logo.png')} style={styles.snsIcon} />
+          <Text style={[styles.snsText, { color: '#fff' }]}>네이버로 시작하기</Text>
+        </Pressable>
 
         {/* Kakao */}
-        <TouchableOpacity style={styles.button} onPress={() => handleLogin('Kakao')}>
-          <MaterialCommunityIcons name="message-text" size={20} color="#000" />
-          <Text style={styles.buttonText}>카카오로 시작하기</Text>
-        </TouchableOpacity>
+        <Pressable
+          style={[styles.snsButton, { backgroundColor: '#FEE500' }]}
+          onPress={() => handleLogin('KAKAO')}
+        >
+          <Image source={require('@/assets/images/kakao_logo.png')} style={styles.snsIcon} />
+          <Text style={[styles.snsText, { color: '#000' }]}>카카오로 시작하기</Text>
+        </Pressable>
 
         {/* Google */}
-        <TouchableOpacity style={styles.button} onPress={() => handleLogin('Google')}>
-          <MaterialCommunityIcons name="google" size={20} color="#000" />
-          <Text style={styles.buttonText}>구글로 시작하기</Text>
-        </TouchableOpacity>
+        <Pressable
+          style={[
+            styles.snsButton,
+            { backgroundColor: '#fff', borderWidth: 1, borderColor: '#DADCE0' },
+          ]}
+          onPress={() => handleLogin('GOOGLE')}
+        >
+          <Image source={require('@/assets/images/google_logo.png')} style={styles.snsIcon} />
+          <Text style={[styles.snsText, { color: '#3C4043' }]}>구글로 시작하기</Text>
+        </Pressable>
       </View>
     </ScrollView>
   );
@@ -77,19 +103,23 @@ const styles = StyleSheet.create({
     width: '100%',
     gap: 10,
   },
-  button: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-    borderColor: '#E5E7EB',
-    borderWidth: 1,
+  snsButton: {
+    width: '100%',
+    height: 48,
     borderRadius: 12,
-    paddingVertical: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative',
   },
-  buttonText: {
-    fontSize: 16,
+  snsIcon: {
+    position: 'absolute',
+    width: 20,
+    height: 20,
+    left: 14,
+  },
+  snsText: {
+    fontSize: 15,
     fontWeight: '500',
-    color: '#111827',
+    textAlign: 'center',
   },
 });

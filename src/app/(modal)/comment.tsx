@@ -4,7 +4,6 @@ import { CommentItem } from '@/features/feed/components/CommentItem';
 import { CommentData } from '@/features/feed/type';
 import { useAlertStore } from '@/store/commonStore';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { jinny } from 'index';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
@@ -98,8 +97,8 @@ export default function CommentModal() {
   /** 댓글 길게 누름 핸들러 */
   const onLongPress = useCallback(
     (item: CommentData) => {
-      const isMyComment = item.user.id === jinny.id;
-      const isMyPost = postUserId === jinny.id;
+      const isMyComment = item.user.id === 1234;
+      const isMyPost = postUserId === String(1234);
 
       if (isMyComment) {
         setActiveType('myComment');
@@ -180,7 +179,12 @@ export default function CommentModal() {
           style={styles.inputWrapper}
         >
           <View style={[styles.inputBox, { paddingBottom: insets.bottom + 8 }]}>
-            <Image source={{ uri: jinny.profileImageUrl }} style={styles.inputAvatar} />
+            <Image
+              source={{
+                uri: 'https://i.pinimg.com/1200x/31/9b/21/319b21b0bcaacf7bb8a8307998c3a46e.jpg',
+              }}
+              style={styles.inputAvatar}
+            />
             <TextInput
               placeholder="댓글을 남겨보세요."
               style={styles.textInput}

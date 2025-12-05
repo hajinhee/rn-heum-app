@@ -8,7 +8,7 @@ export type SwimRecordRank = {
   poolLength: number;
   source: 'auto' | 'manual';
   user: {
-    id: string;
+    id: number;
     nickname: string;
     profileImageUrl: string;
   };

@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { ConfigContext, ExpoConfig } from 'expo/config';
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
@@ -8,8 +9,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   orientation: 'portrait',
   icon: 'src/assets/images/heum-logo.png',
   scheme: 'heumapp',
-  userInterfaceStyle: 'light',
-  newArchEnabled: true,
+  // userInterfaceStyle: 'light',
+  // newArchEnabled: true,
   splash: {
     image: 'src/assets/images/splash-icon.png',
     resizeMode: 'contain',
@@ -21,6 +22,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   },
   ios: {
     supportsTablet: true,
+    bundleIdentifier: 'com.heum.app',
   },
   android: {
     adaptiveIcon: {
@@ -29,6 +31,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     },
     edgeToEdgeEnabled: true,
     predictiveBackGestureEnabled: false,
+    package: 'com.heum.app',
   },
   web: {
     bundler: 'metro',
@@ -59,15 +62,36 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         granularPermissions: ['audio', 'photo'],
       },
     ],
+    [
+      'expo-build-properties',
+      {
+        android: {
+          extraMavenRepos: ['https://devrepo.kakao.com/nexus/content/groups/public/'],
+        },
+        ios: {
+          useFrameworks: 'static',
+        },
+      },
+    ],
+    [
+      '@react-native-kakao/core',
+      {
+        nativeAppKey: process.env.KAKAO_NATIVE_APP_KEY,
+        android: { authCodeHandlerActivity: true },
+        ios: { handleKakaoOpenUrl: true },
+      },
+    ],
   ],
   experiments: {
     typedRoutes: true,
   },
   extra: {
-    kakaoAppKey: process.env.KAKAO_API_KEY,
+    kakaoAppKey: process.env.KAKAO_NATIVE_APP_KEY,
     kakaoRestKey: process.env.KAKAO_REST_API_KEY,
     kakaoJsKey: process.env.KAKAO_JS_KEY,
     apiBaseUrl: process.env.SERVER_URL,
-    eas: {},
+    eas: {
+      projectId: 'd6754215-7c8e-4102-897c-61d1623db3eb',
+    },
   },
 });

@@ -1,7 +1,6 @@
 import { Avatar } from '@/components';
 import { PodiumTop3 } from '@/features/rank/components/PodiumTop3';
 import { SwimRecordRank } from '@/features/rank/components/type';
-import { jinny } from 'index';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
 
@@ -16,7 +15,7 @@ const rankingAllTime: SwimRecordRank[] = [
     poolLength: 25,
     source: 'auto',
     user: {
-      id: '101',
+      id: 101,
       nickname: '장의동 거북이',
       profileImageUrl: 'https://i.pinimg.com/736x/df/a0/47/dfa0473803e06a8725ee85491b0dc4ad.jpg',
     },
@@ -31,7 +30,7 @@ const rankingAllTime: SwimRecordRank[] = [
     poolLength: 25,
     source: 'auto',
     user: {
-      id: '102',
+      id: 102,
       nickname: '은행동 돌고래',
       profileImageUrl: 'https://i.pinimg.com/736x/1d/c2/e3/1dc2e380a7d0de12a8c12ba74c14a7bf.jpg',
     },
@@ -46,7 +45,7 @@ const rankingAllTime: SwimRecordRank[] = [
     poolLength: 25,
     source: 'auto',
     user: {
-      id: '103',
+      id: 103,
       nickname: '초록마을 물개',
       profileImageUrl: 'https://i.pinimg.com/736x/23/b5/c7/23b5c7d072219559a686e2ec09b748ac.jpg',
     },
@@ -61,7 +60,7 @@ const rankingAllTime: SwimRecordRank[] = [
     poolLength: 25,
     source: 'manual',
     user: {
-      id: '104',
+      id: 104,
       nickname: '사용자_1',
       profileImageUrl: null,
     },
@@ -76,7 +75,7 @@ const rankingAllTime: SwimRecordRank[] = [
     poolLength: 25,
     source: 'auto',
     user: {
-      id: 'uuid-jinny',
+      id: 1234,
       nickname: '청학동 수달',
       profileImageUrl: 'https://i.pinimg.com/1200x/31/9b/21/319b21b0bcaacf7bb8a8307998c3a46e.jpg',
     },
@@ -91,7 +90,7 @@ const rankingAllTime: SwimRecordRank[] = [
     poolLength: 25,
     source: 'manual',
     user: {
-      id: '106',
+      id: 106,
       nickname: '사용자_2',
       profileImageUrl: null,
     },
@@ -106,7 +105,7 @@ const rankingAllTime: SwimRecordRank[] = [
     poolLength: 25,
     source: 'manual',
     user: {
-      id: '107',
+      id: 107,
       nickname: '사용자_3',
       profileImageUrl: null,
     },
@@ -121,7 +120,7 @@ const rankingAllTime: SwimRecordRank[] = [
     poolLength: 25,
     source: 'manual',
     user: {
-      id: '107',
+      id: 107,
       nickname: '사용자_3',
       profileImageUrl: null,
     },
@@ -136,7 +135,7 @@ const rankingAllTime: SwimRecordRank[] = [
     poolLength: 25,
     source: 'manual',
     user: {
-      id: '107',
+      id: 107,
       nickname: '사용자_3',
       profileImageUrl: null,
     },
@@ -151,7 +150,7 @@ const rankingAllTime: SwimRecordRank[] = [
     poolLength: 25,
     source: 'manual',
     user: {
-      id: '107',
+      id: 107,
       nickname: '사용자_3',
       profileImageUrl: null,
     },
@@ -166,7 +165,7 @@ const rankingAllTime: SwimRecordRank[] = [
     poolLength: 25,
     source: 'manual',
     user: {
-      id: '107',
+      id: 107,
       nickname: '사용자_3',
       profileImageUrl: null,
     },
@@ -207,7 +206,7 @@ export default function WeeklyRankScreen() {
             key={record.id}
             style={[
               styles.row,
-              { backgroundColor: record.user.id === jinny.id ? '#F0F7FD' : 'transparents' },
+              { backgroundColor: record.user.id === 1234 ? '#F0F7FD' : 'transparents' },
             ]}
           >
             <Text style={styles.rank}>{idx + 4}</Text>

@@ -3,9 +3,8 @@ import { ActionSheet } from '@/components/common/ActionSheet';
 import { useAlertStore, useToastStore } from '@/store/commonStore';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { jinny } from 'index';
 import React, { useEffect, useMemo, useState } from 'react';
-import { Image, Pressable, Share, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, Pressable, Share, StyleSheet, Text, View } from 'react-native';
 import { PostData } from '../type';
 
 export const PostCard = React.memo(function PostCard({
@@ -80,7 +79,7 @@ export const PostCard = React.memo(function PostCard({
   /** 게시물 옵션 메뉴 (권한에 따른 분기) */
   const actionSheetActions = useMemo(() => {
     // 내 게시물일 때
-    if (item.user.id === jinny.id) {
+    if (item.user.id === 1234) {
       return [
         {
           label: '수정하기',
@@ -216,7 +215,7 @@ export const PostCard = React.memo(function PostCard({
 
         <View style={styles.postActions}>
           {/* 좋아요 버튼 */}
-          <TouchableOpacity style={styles.actionButton} onPress={handleToggleLike}>
+          <Pressable style={styles.actionButton} onPress={handleToggleLike}>
             <Ionicons
               name={liked ? 'heart' : 'heart-outline'}
               size={20}
@@ -225,10 +224,10 @@ export const PostCard = React.memo(function PostCard({
             <Text style={[styles.likesCount, liked && { color: '#EE685A' }]}>
               {likeCount > 0 ? likeCount : null}
             </Text>
-          </TouchableOpacity>
+          </Pressable>
 
           {/* 댓글 버튼 */}
-          <TouchableOpacity
+          <Pressable
             style={styles.actionButton}
             onPress={() =>
               router.navigate({
@@ -241,15 +240,15 @@ export const PostCard = React.memo(function PostCard({
             <Text style={styles.commentsCount}>
               {item.comments.length > 0 ? item.comments.length : null}
             </Text>
-          </TouchableOpacity>
+          </Pressable>
 
           {/* 공유 버튼 */}
-          <TouchableOpacity
+          <Pressable
             style={styles.actionButton}
             onPress={() => handleShareLink(item.user.nickname, String(item.id))}
           >
             <Ionicons name="send-outline" size={20} color="#111827" />
-          </TouchableOpacity>
+          </Pressable>
         </View>
       </Card>
 

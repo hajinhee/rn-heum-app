@@ -3,9 +3,9 @@ import {
   Animated,
   LayoutChangeEvent,
   Platform,
+  Pressable,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from 'react-native';
 
@@ -169,11 +169,10 @@ export default function SegmentedControl({
           style={[styles.row, containerWidth ? { width: containerWidth, height: '100%' } : null]}
         >
           {options.map((option, index) => (
-            <TouchableOpacity
+            <Pressable
               key={option}
               style={styles.optionContainer}
               onPress={() => onSelect(index)}
-              activeOpacity={0.8}
             />
           ))}
         </View>

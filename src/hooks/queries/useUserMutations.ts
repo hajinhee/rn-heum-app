@@ -1,12 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import {
-  deleteUser,
-  getUserInfo,
-  getUserPostList,
-  postSignup,
-  putUpdateUser,
-} from '@/api/endpoints/user';
+import { postSignup } from '@/api/endpoints';
+import { deleteUser, getUserInfo, getUserPostList, putUpdateUser } from '@/api/endpoints/user';
 import { useAuthStore } from '@/store/authStore';
 
 /**

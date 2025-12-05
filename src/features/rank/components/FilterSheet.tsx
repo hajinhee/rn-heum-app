@@ -153,7 +153,7 @@ export default function FilterSheet() {
               title="적용하기"
               variant="filled"
               style={styles.button}
-              onPress={() => console.log('필터 조건 적용 -> 검색 결과 보여주기')}
+              onPress={() => console.log('currentSelect: ', currentSelect)}
             />
           </View>
         </>

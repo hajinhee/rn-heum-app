@@ -1,7 +1,7 @@
 import { SearchInputProps } from '@/features/search/type';
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
-import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
+import { Pressable, StyleSheet, TextInput, View } from 'react-native';
 
 export function SearchInput({
   value,
@@ -28,9 +28,9 @@ export function SearchInput({
       />
 
       {value.length > 0 && (
-        <TouchableOpacity onPress={onClear}>
+        <Pressable onPress={onClear}>
           <Ionicons name="close-circle" size={18} color="#A3A3A3" />
-        </TouchableOpacity>
+        </Pressable>
       )}
     </View>
   );

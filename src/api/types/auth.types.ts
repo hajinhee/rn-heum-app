@@ -2,11 +2,8 @@
  * 로그인 요청 (POST /auth/login)
  */
 export interface AuthLoginRequestDto {
-  username: string;
-  password: string;
-  // TODO: 소셜 로그인이라면 provider, token 필드 추가 필요?
-  // provider: 'KAKAO' | 'GOOGLE';
-  // socialToken: string;
+  provider: 'NAVER' | 'KAKAO' | 'GOOGLE';
+  socialToken: string;
 }
 
 /**

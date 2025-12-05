@@ -11,6 +11,7 @@ import type { CommonResponseDto } from '@/api/types/common.types';
  */
 export const postLogin = async (data: AuthLoginRequestDto) => {
   const response = await apiClient.post<AuthLoginResponseDto>('/auth/login', data);
+  console.log('💕 response.data', response.data);
   return response.data;
 };
 

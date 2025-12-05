@@ -1,6 +1,6 @@
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import { Button, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Avatar } from '@/components';
@@ -56,7 +56,7 @@ export default function MyScreen() {
         <View style={styles.menuSection}>
           {/* 스마트 워치 */}
           <View style={styles.menuGroup}>
-            <TouchableOpacity style={styles.menuItem}>
+            <Pressable style={styles.menuItem}>
               <View style={styles.iconTextWrapper}>
                 <Ionicons name="watch" size={18} color="black" />
                 <Text style={styles.menuText}>스마트 워치</Text>
@@ -75,19 +75,19 @@ export default function MyScreen() {
                 {/* 화살표 */}
                 <Ionicons name="chevron-forward" size={18} color="#B0B0B0" />
               </View>
-            </TouchableOpacity>
+            </Pressable>
           </View>
           {/* 계정 관리-내 정보, 알림 설정 */}
           <Text style={styles.menuItemsTitle}>계정 관리</Text>
           <View style={styles.menuGroup}>
-            <TouchableOpacity style={styles.menuItem}>
+            <Pressable style={styles.menuItem}>
               <View style={styles.iconTextWrapper}>
                 <Ionicons name="person" size={18} color="black" />
                 <Text style={styles.menuText}>내 정보</Text>
               </View>
               <Ionicons name="chevron-forward" size={18} color="#B0B0B0" />
-            </TouchableOpacity>
-            <TouchableOpacity
+            </Pressable>
+            <Pressable
               style={styles.menuItem}
               onPress={() => router.push('/(main)/notification/setting')}
             >
@@ -96,69 +96,57 @@ export default function MyScreen() {
                 <Text style={styles.menuText}>알림 설정</Text>
               </View>
               <Ionicons name="chevron-forward" size={18} color="#B0B0B0" />
-            </TouchableOpacity>
+            </Pressable>
           </View>
           <View style={styles.menuGroup}>
-            <TouchableOpacity style={styles.menuItem}>
+            <Pressable style={styles.menuItem}>
               <View style={styles.iconTextWrapper}>
                 <Ionicons name="log-out-outline" size={18} color="black" />
                 <Text style={[styles.menuText]}>로그아웃</Text>
               </View>
 
               <Ionicons name="chevron-forward" size={18} color="#B0B0B0" />
-            </TouchableOpacity>
+            </Pressable>
           </View>
 
           {/* 활동 관리-내 목표, 내 배지 */}
           <Text style={styles.menuItemsTitle}>활동 관리</Text>
           <View style={styles.menuGroup}>
-            <TouchableOpacity style={styles.menuItem}>
+            <Pressable style={styles.menuItem}>
               <View style={styles.iconTextWrapper}>
                 <FontAwesome name="bullseye" size={18} color="black" />
                 <Text style={styles.menuText}>내 목표</Text>
               </View>
               <Ionicons name="chevron-forward" size={18} color="#B0B0B0" />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.menuItem}>
+            </Pressable>
+            <Pressable style={styles.menuItem}>
               <View style={styles.iconTextWrapper}>
                 <Ionicons name="ribbon" size={18} color="black" />
                 <Text style={styles.menuText}>내 배지</Text>
               </View>
 
               <Ionicons name="chevron-forward" size={18} color="#B0B0B0" />
-            </TouchableOpacity>
+            </Pressable>
           </View>
           {/* 고객 지원 - 자주 묻는 질물, 문의하기 */}
           <Text style={styles.menuItemsTitle}>고객 지원</Text>
           <View style={styles.menuGroup}>
-            <TouchableOpacity style={styles.menuItem}>
+            <Pressable style={styles.menuItem}>
               <View style={styles.iconTextWrapper}>
                 <Ionicons name="help-circle" size={18} color="black" />
                 <Text style={styles.menuText}>자주 묻는 질문</Text>
               </View>
 
               <Ionicons name="chevron-forward" size={18} color="#B0B0B0" />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.menuItem}>
+            </Pressable>
+            <Pressable style={styles.menuItem}>
               <View style={styles.iconTextWrapper}>
                 <Ionicons name="mail" size={18} color="black" />
                 <Text style={styles.menuText}>문의하기</Text>
               </View>
 
               <Ionicons name="chevron-forward" size={18} color="#B0B0B0" />
-            </TouchableOpacity>
-
-            {/*디자인 시스템 컴포넌트 갤러리 (개발 모드)*/}
-            {__DEV__ && (
-              <TouchableOpacity
-                style={styles.menuItem}
-                onPress={() => router.push('/component-gallery')}
-              >
-                <View style={styles.iconTextWrapper}>
-                  <Text style={styles.menuText}>DEV: Component Gallery</Text>
-                </View>
-              </TouchableOpacity>
-            )}
+            </Pressable>
           </View>
         </View>
       </View>
