@@ -86,9 +86,14 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     typedRoutes: true,
   },
   extra: {
+    // kakao
     kakaoAppKey: process.env.KAKAO_NATIVE_APP_KEY,
     kakaoRestKey: process.env.KAKAO_REST_API_KEY,
     kakaoJsKey: process.env.KAKAO_JS_KEY,
+    // naver
+    naverClientKey: process.env.NAVER_CLIENT_ID,
+    naverSecretKey: process.env.NAVER_CLIENT_SECRET,
+    // server URL
     apiBaseUrl: process.env.SERVER_URL,
     eas: {
       projectId: 'd6754215-7c8e-4102-897c-61d1623db3eb',

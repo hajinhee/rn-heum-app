@@ -27,6 +27,7 @@
     "@react-native-kakao/user": "^2.4.2",
     "@react-native-masked-view/masked-view": "^0.3.2",
     "@react-native-seoul/kakao-login": "^5.4.2",
+    "@react-native-seoul/naver-login": "^4.2.3",
     "@react-navigation/material-top-tabs": "^7.4.2",
     "@react-navigation/native": "^7.1.8",
     "@shopify/flash-list": "2.0.2",
