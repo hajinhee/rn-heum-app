@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { postLogin, postLogout } from '@/api/endpoints/auth';
 import { useAuthStore } from '@/store/authStore';
+import { useUserStore } from '@/store/userStore';
 import { useRouter } from 'expo-router';
 
 /**
@@ -15,8 +16,15 @@ export const useLoginMutation = () => {
   return useMutation({
     mutationFn: postLogin,
     onSuccess: (data) => {
-      console.log('❤️ data', data);
       setTokens(data.accessToken, data.refreshToken);
+
+      useUserStore.getState().setUser({
+        id: data.user.id,
+        email: data.user.email,
+        nickname: data.user.profile?.nickname ?? null,
+        profileImageUrl: data.user.profile?.profileImageUrl ?? null,
+        bio: data.user.profile?.bio ?? null,
+      });
       queryClient.invalidateQueries({ queryKey: ['user'] });
       router.replace('/(tabs)'); // 성공하면 이동
     },

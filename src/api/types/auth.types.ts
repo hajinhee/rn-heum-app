@@ -12,6 +12,12 @@ export interface AuthLoginRequestDto {
 export interface AuthLoginResponseDto {
   accessToken: string;
   refreshToken: string;
+  user: {
+    email: string;
+    id: number;
+    profile: { nickname: string; profileImageUrl: string; bio: string };
+    socialProvider: string;
+  };
 }
 
 /**

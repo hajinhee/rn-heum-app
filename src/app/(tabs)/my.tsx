@@ -4,16 +4,18 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Avatar } from '@/components';
+import { useUserStore } from '@/store/userStore';
 
 export default function MyScreen() {
   const insets = useSafeAreaInsets();
+  const { email, nickname, profileImageUrl, bio } = useUserStore();
 
   // 스마트 워치 연결 상태
   const isConnected = true;
 
   // 프로필 이미지
-  const userProfileImageSource = require('@/assets/images/profile.png');
-  const hasProfileImage = !!userProfileImageSource;
+  const hasProfileImage = !!profileImageUrl;
+  const secureUrl = profileImageUrl.replace(/^http:/, 'https:'); // React Native(특히 iOS)가 기본적으로 http 이미지를 차단
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={[{ paddingTop: insets.top }]}>
@@ -23,16 +25,16 @@ export default function MyScreen() {
           <View style={styles.profileSection}>
             <Avatar
               size="lg"
-              src={hasProfileImage ? userProfileImageSource : undefined}
-              fallbackText="청학동 수달"
+              src={hasProfileImage ? secureUrl : undefined}
+              fallbackText={nickname}
             />
             <View>
-              <Text style={styles.nickname}>청학동 수달님</Text>
-              <Text style={styles.email}>user@example.com</Text>
+              <Text style={styles.nickname}>{nickname}</Text>
+              <Text style={styles.email}>{email}</Text>
             </View>
           </View>
           <View>
-            <Text style={styles.bio}>자기소개 글이 없습니다.</Text>
+            <Text style={styles.bio}>{bio ? bio : '자기소개 글이 없습니다.'}</Text>
           </View>
         </View>
 

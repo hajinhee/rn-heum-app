@@ -7,11 +7,10 @@ export default function AuthScreen() {
   const loginMutation = useLoginMutation();
 
   const handleLogin = async (provider: string) => {
-    console.log(`${provider} 로그인`);
-
     if (provider === 'KAKAO') {
       try {
         const result = await KakaoLogin.login();
+        console.log('############ result', result);
         const accessToken = result.accessToken;
 
         loginMutation.mutate({

@@ -1,6 +1,8 @@
-import axios from 'axios';
-import Constants from 'expo-constants';
 import { useAuthStore } from '@/store/authStore';
+import axios from 'axios';
+import camelcaseKeys from 'camelcase-keys';
+import Constants from 'expo-constants';
+import snakecaseKeys from 'snakecase-keys';
 
 export const apiClient = axios.create({
   baseURL: Constants.expoConfig.extra.apiBaseUrl || 'https://api.example.com',
@@ -20,13 +22,13 @@ const runRefresh = async (): Promise<string | null> => {
   }
   try {
     // 인터셉터 비적용용 생 axios 사용
-    const res = await axios.post<{ accessToken: string; refreshToken?: string }>(
-      REFRESH_URL,
-      { refreshToken },
-      { timeout: 10000 },
-    );
-    const newAccess = res.data.accessToken;
-    const newRefresh = res.data.refreshToken ?? refreshToken;
+    const res = await axios.post(REFRESH_URL, snakecaseKeys({ refreshToken }, { deep: true }), {
+      timeout: 10000,
+    });
+
+    const data = camelcaseKeys(res.data, { deep: true });
+    const newAccess = data.accessToken;
+    const newRefresh = data.refreshToken ?? refreshToken;
     setTokens(newAccess, newRefresh);
     return newAccess;
   } catch {
@@ -44,6 +46,10 @@ apiClient.interceptors.request.use(
     if (accessToken) {
       config.headers['Authorization'] = `Bearer ${accessToken}`;
     }
+
+    if (config.data) {
+      config.data = snakecaseKeys(config.data, { deep: true });
+    }
     return config;
   },
   (error) => {
@@ -53,7 +59,10 @@ apiClient.interceptors.request.use(
 
 // 응답 인터셉터 - 토큰 재발급 로직
 apiClient.interceptors.response.use(
-  (response) => response, // 성공 시 그대로 반환
+  (response) => {
+    response.data = camelcaseKeys(response.data, { deep: true });
+    return response;
+  },
   async (error) => {
     const originalRequest = error.config;
     if (!originalRequest) return Promise.reject(error);

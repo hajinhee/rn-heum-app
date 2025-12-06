@@ -46,6 +46,7 @@ export function Avatar({ src, fallbackText = '', size = 'md', className = '' }: 
             borderRadius: avatarSize / 2,
           }}
           resizeMode="cover"
+          onError={(e) => console.log('이미지 에러 발생:', e.nativeEvent.error)}
         />
       ) : (
         <Text
