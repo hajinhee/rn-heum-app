@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import { postLogin, postLogout } from '@/api/endpoints/auth';
+import { postLogin } from '@/api/endpoints/auth';
 import { useAuthStore } from '@/store/authStore';
 import { useUserStore } from '@/store/userStore';
 import { useRouter } from 'expo-router';
@@ -10,6 +10,7 @@ import { useRouter } from 'expo-router';
  */
 export const useLoginMutation = () => {
   const { setTokens } = useAuthStore();
+
   const router = useRouter();
   const queryClient = useQueryClient();
 
@@ -38,20 +39,27 @@ export const useLoginMutation = () => {
  * 로그아웃 뮤테이션
  */
 export const useLogoutMutation = () => {
+  const router = useRouter();
+
   const { logout } = useAuthStore();
+  const { clearUser } = useUserStore();
+
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: postLogout,
+    mutationFn: async () => {},
     onSuccess: () => {
       logout();
+      clearUser();
       queryClient.clear();
+      router.replace('/(auth)'); // 성공하면 이동
     },
     onError: (error) => {
-      // API 호출이 실패하더라도, 강제로 로그아웃 처리
       console.error('로그아웃 API 실패:', error);
       logout();
+      clearUser();
       queryClient.clear();
+      router.replace('/(auth)');
     },
   });
 };

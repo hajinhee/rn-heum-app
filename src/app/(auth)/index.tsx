@@ -20,7 +20,7 @@ export default function AuthScreen() {
     };
 
     try {
-      const init = await NaverLogin.initialize(initialOptions);
+      await NaverLogin.initialize(initialOptions);
       const result = await NaverLogin.login();
 
       if (result.isSuccess) {
@@ -52,42 +52,32 @@ export default function AuthScreen() {
       console.error('KAKAO 로그인 실패:', e);
     }
   };
+
   const [request, response, promptAsync] = Google.useAuthRequest({
     iosClientId: Constants.expoConfig.extra.googleIosKey,
     androidClientId: Constants.expoConfig.extra.googleAndroidKey,
     webClientId: Constants.expoConfig.extra.googleWebKey,
   });
 
-  // response 객체가 변경될 때마다 실행되는 useEffect 훅
-  // Google 인증이 성공적으로 완료되었을 때 accessToken을 추출하고 백엔드에 전송합니다.
+  // Google 인증이 성공적으로 완료되었을 때 accessToken 추출
   useEffect(() => {
     if (response?.type === 'success') {
       const accessToken = response.authentication.accessToken;
 
-      console.log('Google Access Token:', accessToken);
-
-      // 획득한 accessToken을 백엔드로 보내 소셜 로그인을 완료합니다.
       loginMutation.mutate({
         provider: 'GOOGLE',
         socialToken: accessToken,
       });
-
-      // 필요한 경우 사용자 정보를 추가로 가져올 수 있습니다.
-      // fetchUserInfo(accessToken);
     } else if (response?.type === 'cancel') {
       console.log('Google 로그인 취소됨.');
     } else if (response?.type === 'error') {
       console.error('Google 로그인 오류:', response.error);
     }
-  }, [response]); // response 객체가 업데이트될 때마다 실행
+  }, [response]);
 
-  // ---
-
-  /** 구글 로그인 (수정됨) */
+  /** 구글 로그인 */
   const handleGoogleLogin = async () => {
     try {
-      // ⭐️ promptAsync 함수를 호출하여 인증 플로우를 시작합니다. ⭐️
-      // request 객체가 준비되었을 때만 호출해야 합니다.
       if (request) {
         await promptAsync();
       } else {

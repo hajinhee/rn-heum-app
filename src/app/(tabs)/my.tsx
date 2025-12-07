@@ -1,21 +1,48 @@
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Avatar } from '@/components';
-import { useUserStore } from '@/store/userStore';
+import { useLogoutMutation } from '@/hooks/queries/useAuthMutations';
+import { useUserInfoQuery } from '@/hooks/queries/useUserMutations';
+import { useAlertStore } from '@/store/commonStore';
 
 export default function MyScreen() {
   const insets = useSafeAreaInsets();
-  const { email, nickname, profileImageUrl, bio } = useUserStore();
+
+  const { open } = useAlertStore();
+
+  const { data, isLoading, error } = useUserInfoQuery();
+  const logoutMutation = useLogoutMutation();
 
   // 스마트 워치 연결 상태
   const isConnected = true;
 
-  // 프로필 이미지
-  const hasProfileImage = !!profileImageUrl;
-  const secureUrl = profileImageUrl.replace(/^http:/, 'https:'); // React Native(특히 iOS)가 기본적으로 http 이미지를 차단
+  /** 로그아웃 핸들러 */
+  const handleLogout = () => {
+    // 알러트 확인 메시지 띄우기
+    open({
+      type: 'warning',
+      title: '로그아웃하시겠어요?',
+      message: '언제든 다시 로그인할 수 있어요.',
+      confirmText: '로그아웃',
+      cancelText: '취소',
+      onConfirm: () => {
+        logoutMutation.mutate();
+        router.replace('/(auth)');
+      },
+      onCancel: () => console.log('취소됨'),
+    });
+  };
+
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#FFFFFF" />
+      </View>
+    );
+  }
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={[{ paddingTop: insets.top }]}>
@@ -25,16 +52,22 @@ export default function MyScreen() {
           <View style={styles.profileSection}>
             <Avatar
               size="lg"
-              src={hasProfileImage ? secureUrl : undefined}
-              fallbackText={nickname}
+              src={
+                !!data.profile.profileImageUrl
+                  ? data.profile.profileImageUrl.replace(/^http:/, 'https:')
+                  : undefined
+              }
+              fallbackText={data.profile.nickname}
             />
             <View>
-              <Text style={styles.nickname}>{nickname}</Text>
-              <Text style={styles.email}>{email}</Text>
+              <Text style={styles.nickname}>{data.profile.nickname}</Text>
+              <Text style={styles.email}>{data.email}</Text>
             </View>
           </View>
           <View>
-            <Text style={styles.bio}>{bio ? bio : '자기소개 글이 없습니다.'}</Text>
+            <Text style={styles.bio}>
+              {data.profile.bio ? data.profile.bio : '자기소개 글이 없습니다.'}
+            </Text>
           </View>
         </View>
 
@@ -101,7 +134,7 @@ export default function MyScreen() {
             </Pressable>
           </View>
           <View style={styles.menuGroup}>
-            <Pressable style={styles.menuItem}>
+            <Pressable style={styles.menuItem} onPress={handleLogout}>
               <View style={styles.iconTextWrapper}>
                 <Ionicons name="log-out-outline" size={18} color="black" />
                 <Text style={[styles.menuText]}>로그아웃</Text>
@@ -265,5 +298,10 @@ const styles = StyleSheet.create({
   logoutText: {
     fontWeight: '600',
     color: '#EF4444',
+  },
+  loadingContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

@@ -42,6 +42,7 @@ apiClient.interceptors.request.use(
   (config) => {
     // Zustand 스토어에서 accessToken 가져오기 (훅이 아닌 .getState() 사용)
     const accessToken = useAuthStore.getState().accessToken;
+    console.log('❤️ accessToken', accessToken);
 
     if (accessToken) {
       config.headers['Authorization'] = `Bearer ${accessToken}`;
