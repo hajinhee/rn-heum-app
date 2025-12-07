@@ -1,7 +1,7 @@
 import { Card } from '@/components/common/Card';
 import { Ionicons } from '@expo/vector-icons';
 import dayjs from 'dayjs';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { NotificationItem } from '../type';
 
 // 알림 타입별 아이콘 정의
@@ -30,7 +30,7 @@ export function NotificationCard({ item }: { item: NotificationItem }) {
   const iconProps = getNotificationIconProps(type);
 
   return (
-    <TouchableOpacity onPress={() => {}}>
+    <Pressable onPress={() => {}}>
       <Card style={styles.card}>
         <Ionicons name={iconProps.name} size={24} color={iconProps.color} style={styles.icon} />
         <View style={styles.contentWrapper}>
@@ -41,7 +41,7 @@ export function NotificationCard({ item }: { item: NotificationItem }) {
           <Text style={styles.timeText}>{dayjs(createdAt).format('hh:mm A')}</Text>
         </View>
       </Card>
-    </TouchableOpacity>
+    </Pressable>
   );
 }
 

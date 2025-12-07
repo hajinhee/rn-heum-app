@@ -6,15 +6,16 @@ export function PodiumTop3({ users }) {
 
   return (
     <View style={styles.podiumContainer}>
+      {/* 빛나는 배경 */}
+      <Image
+        source={require('@/assets/images/sunburst.png')}
+        style={styles.sunburst}
+        resizeMode="contain"
+      />
+
       {/* 중앙 1등 */}
       <View style={styles.firstColumn}>
         <View style={styles.avatarCircleBig}>
-          {/* 빛나는 배경 */}
-          <Image
-            source={require('@/assets/images/sunburst.png')}
-            style={styles.sunburst}
-            resizeMode="contain"
-          />
           <Avatar src={first.user.profileImageUrl} size="xl" />
         </View>
         <Text style={styles.name}>{first.user.nickname}</Text>
@@ -136,7 +137,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   podiumBlock: {
-    width: 70,
+    width: 90,
     alignItems: 'center',
     justifyContent: 'flex-end',
     borderTopLeftRadius: 16,

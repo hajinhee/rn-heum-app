@@ -1,30 +1,20 @@
 import { PostData } from './feed.types';
 
 /**
- * 공통 유저 응답 (GET /user 등)
+ * 공통 유저 응답 (GET /user, GET /user/me 등)
  */
 export interface UserResponseDto {
-  userId: number;
-  name: string;
-  grade: number;
-  phoneNumber: string;
-  birth: string | null; // Nullable
+  id: number;
+  email: string;
+  profile: {
+    nickname: string;
+    profileImageUrl: string;
+    bio: string;
+  };
 }
 
 /**
- * 회원가입 요청 (POST /user)
- */
-export interface UserCreateRequestDto {
-  username: string;
-  password: string;
-  name: string;
-  grade: number;
-  phoneNumber: string;
-  birth?: string;
-}
-
-/**
- * 회원 정보 수정 요청 (PUT /user)
+ * 내 정보 수정 요청 (PUT /user/me)
  */
 export interface UserUpdateRequestDto {
   name?: string;

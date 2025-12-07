@@ -1,19 +1,48 @@
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import { Button, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Avatar } from '@/components';
+import { useLogoutMutation } from '@/hooks/queries/useAuthMutations';
+import { useUserInfoQuery } from '@/hooks/queries/useUserMutations';
+import { useAlertStore } from '@/store/commonStore';
 
 export default function MyScreen() {
   const insets = useSafeAreaInsets();
 
+  const { open } = useAlertStore();
+
+  const { data, isLoading, error } = useUserInfoQuery();
+  const logoutMutation = useLogoutMutation();
+
   // 스마트 워치 연결 상태
   const isConnected = true;
 
-  // 프로필 이미지
-  const userProfileImageSource = require('@/assets/images/profile.png');
-  const hasProfileImage = !!userProfileImageSource;
+  /** 로그아웃 핸들러 */
+  const handleLogout = () => {
+    // 알러트 확인 메시지 띄우기
+    open({
+      type: 'warning',
+      title: '로그아웃하시겠어요?',
+      message: '언제든 다시 로그인할 수 있어요.',
+      confirmText: '로그아웃',
+      cancelText: '취소',
+      onConfirm: () => {
+        logoutMutation.mutate();
+        router.replace('/(auth)');
+      },
+      onCancel: () => console.log('취소됨'),
+    });
+  };
+
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#FFFFFF" />
+      </View>
+    );
+  }
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={[{ paddingTop: insets.top }]}>
@@ -23,16 +52,22 @@ export default function MyScreen() {
           <View style={styles.profileSection}>
             <Avatar
               size="lg"
-              src={hasProfileImage ? userProfileImageSource : undefined}
-              fallbackText="청학동 수달"
+              src={
+                !!data.profile.profileImageUrl
+                  ? data.profile.profileImageUrl.replace(/^http:/, 'https:')
+                  : undefined
+              }
+              fallbackText={data.profile.nickname}
             />
             <View>
-              <Text style={styles.nickname}>청학동 수달님</Text>
-              <Text style={styles.email}>user@example.com</Text>
+              <Text style={styles.nickname}>{data.profile.nickname}</Text>
+              <Text style={styles.email}>{data.email}</Text>
             </View>
           </View>
           <View>
-            <Text style={styles.bio}>자기소개 글이 없습니다.</Text>
+            <Text style={styles.bio}>
+              {data.profile.bio ? data.profile.bio : '자기소개 글이 없습니다.'}
+            </Text>
           </View>
         </View>
 
@@ -56,7 +91,7 @@ export default function MyScreen() {
         <View style={styles.menuSection}>
           {/* 스마트 워치 */}
           <View style={styles.menuGroup}>
-            <TouchableOpacity style={styles.menuItem}>
+            <Pressable style={styles.menuItem}>
               <View style={styles.iconTextWrapper}>
                 <Ionicons name="watch" size={18} color="black" />
                 <Text style={styles.menuText}>스마트 워치</Text>
@@ -75,19 +110,19 @@ export default function MyScreen() {
                 {/* 화살표 */}
                 <Ionicons name="chevron-forward" size={18} color="#B0B0B0" />
               </View>
-            </TouchableOpacity>
+            </Pressable>
           </View>
           {/* 계정 관리-내 정보, 알림 설정 */}
           <Text style={styles.menuItemsTitle}>계정 관리</Text>
           <View style={styles.menuGroup}>
-            <TouchableOpacity style={styles.menuItem}>
+            <Pressable style={styles.menuItem}>
               <View style={styles.iconTextWrapper}>
                 <Ionicons name="person" size={18} color="black" />
                 <Text style={styles.menuText}>내 정보</Text>
               </View>
               <Ionicons name="chevron-forward" size={18} color="#B0B0B0" />
-            </TouchableOpacity>
-            <TouchableOpacity
+            </Pressable>
+            <Pressable
               style={styles.menuItem}
               onPress={() => router.push('/(main)/notification/setting')}
             >
@@ -96,69 +131,57 @@ export default function MyScreen() {
                 <Text style={styles.menuText}>알림 설정</Text>
               </View>
               <Ionicons name="chevron-forward" size={18} color="#B0B0B0" />
-            </TouchableOpacity>
+            </Pressable>
           </View>
           <View style={styles.menuGroup}>
-            <TouchableOpacity style={styles.menuItem}>
+            <Pressable style={styles.menuItem} onPress={handleLogout}>
               <View style={styles.iconTextWrapper}>
                 <Ionicons name="log-out-outline" size={18} color="black" />
                 <Text style={[styles.menuText]}>로그아웃</Text>
               </View>
 
               <Ionicons name="chevron-forward" size={18} color="#B0B0B0" />
-            </TouchableOpacity>
+            </Pressable>
           </View>
 
           {/* 활동 관리-내 목표, 내 배지 */}
           <Text style={styles.menuItemsTitle}>활동 관리</Text>
           <View style={styles.menuGroup}>
-            <TouchableOpacity style={styles.menuItem}>
+            <Pressable style={styles.menuItem}>
               <View style={styles.iconTextWrapper}>
                 <FontAwesome name="bullseye" size={18} color="black" />
                 <Text style={styles.menuText}>내 목표</Text>
               </View>
               <Ionicons name="chevron-forward" size={18} color="#B0B0B0" />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.menuItem}>
+            </Pressable>
+            <Pressable style={styles.menuItem}>
               <View style={styles.iconTextWrapper}>
                 <Ionicons name="ribbon" size={18} color="black" />
                 <Text style={styles.menuText}>내 배지</Text>
               </View>
 
               <Ionicons name="chevron-forward" size={18} color="#B0B0B0" />
-            </TouchableOpacity>
+            </Pressable>
           </View>
           {/* 고객 지원 - 자주 묻는 질물, 문의하기 */}
           <Text style={styles.menuItemsTitle}>고객 지원</Text>
           <View style={styles.menuGroup}>
-            <TouchableOpacity style={styles.menuItem}>
+            <Pressable style={styles.menuItem}>
               <View style={styles.iconTextWrapper}>
                 <Ionicons name="help-circle" size={18} color="black" />
                 <Text style={styles.menuText}>자주 묻는 질문</Text>
               </View>
 
               <Ionicons name="chevron-forward" size={18} color="#B0B0B0" />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.menuItem}>
+            </Pressable>
+            <Pressable style={styles.menuItem}>
               <View style={styles.iconTextWrapper}>
                 <Ionicons name="mail" size={18} color="black" />
                 <Text style={styles.menuText}>문의하기</Text>
               </View>
 
               <Ionicons name="chevron-forward" size={18} color="#B0B0B0" />
-            </TouchableOpacity>
-
-            {/*디자인 시스템 컴포넌트 갤러리 (개발 모드)*/}
-            {__DEV__ && (
-              <TouchableOpacity
-                style={styles.menuItem}
-                onPress={() => router.push('/component-gallery')}
-              >
-                <View style={styles.iconTextWrapper}>
-                  <Text style={styles.menuText}>DEV: Component Gallery</Text>
-                </View>
-              </TouchableOpacity>
-            )}
+            </Pressable>
           </View>
         </View>
       </View>
@@ -275,5 +298,10 @@ const styles = StyleSheet.create({
   logoutText: {
     fontWeight: '600',
     color: '#EF4444',
+  },
+  loadingContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

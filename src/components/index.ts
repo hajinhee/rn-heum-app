@@ -1,6 +1,5 @@
 // common
 export * from './common/ActionSheet';
-export * from './common/AlertModal';
 export * from './common/AnimatedButton';
 export * from './common/Avatar';
 export * from './common/Button';

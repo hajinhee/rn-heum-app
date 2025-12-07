@@ -1,6 +1,7 @@
+import { useAppStore } from '@/store';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { Image, View as RNView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, Pressable, View as RNView, StyleSheet, Text, View } from 'react-native';
 
 const ONBOARDING_DATA = [
   {
@@ -41,6 +42,8 @@ const TOTAL_PAGES = ONBOARDING_DATA.length; // 실제로는 스와이프 로직�
 export default function OnboardingScreen() {
   const router = useRouter();
 
+  const { setOnboardingCompleted } = useAppStore();
+
   // 현재 페이지 인덱스 상태
   const [currentPageIndex, setCurrentPageIndex] = useState(0);
 
@@ -60,6 +63,7 @@ export default function OnboardingScreen() {
 
   // 인증 화면으로 최종 이동하는 함수 (시작하기 버튼용)
   const handleStart = () => {
+    setOnboardingCompleted();
     router.replace('/(auth)');
   };
 
@@ -74,9 +78,8 @@ export default function OnboardingScreen() {
   };
 
   return (
-    <TouchableOpacity
+    <Pressable
       style={styles.container}
-      activeOpacity={1} // 탭할 때 투명도 변화 없게 설정
       onPress={isLastPage ? undefined : handleNext} // 마지막 페이지가 아니면 handleNext 호출
     >
       <RNView style={{ flex: 1 }} />
@@ -103,12 +106,12 @@ export default function OnboardingScreen() {
           <Text style={styles.tabButtonText}>탭하여 계속하기</Text>
         ) : (
           // 💡 마지막 페이지일 때: "시작하기" 버튼
-          <TouchableOpacity style={styles.startButton} onPress={handleStart}>
+          <Pressable style={styles.startButton} onPress={handleStart}>
             <Text style={styles.startButtonText}>시작하기</Text>
-          </TouchableOpacity>
+          </Pressable>
         )}
       </RNView>
-    </TouchableOpacity>
+    </Pressable>
   );
 }
 const styles = StyleSheet.create({

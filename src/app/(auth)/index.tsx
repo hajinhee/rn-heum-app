@@ -1,13 +1,91 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
-import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useLoginMutation } from '@/hooks/queries/useAuthMutations';
+import * as KakaoLogin from '@react-native-seoul/kakao-login';
+import NaverLogin from '@react-native-seoul/naver-login';
+import * as Google from 'expo-auth-session/providers/google';
+import Constants from 'expo-constants';
+import { useEffect } from 'react';
+import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 export default function AuthScreen() {
-  const router = useRouter();
+  const loginMutation = useLoginMutation();
 
-  const handleLogin = (type: string) => {
-    console.log(`${type} 로그인`);
-    router.replace('/(tabs)');
+  /** 네이버 로그인 */
+  const handleNaverLogin = async () => {
+    const initialOptions = {
+      consumerKey: Constants.expoConfig.extra.naverClientKey,
+      consumerSecret: Constants.expoConfig.extra.naverSecretKey,
+      appName: 'heum-app',
+      serviceUrlScheme: 'heumapp', // Android
+      serviceUrlSchemeIOS: 'heumapp', // iOS
+    };
+
+    try {
+      await NaverLogin.initialize(initialOptions);
+      const result = await NaverLogin.login();
+
+      if (result.isSuccess) {
+        const accessToken = result.successResponse.accessToken;
+
+        loginMutation.mutate({
+          provider: 'NAVER',
+          socialToken: accessToken,
+        });
+      } else {
+        console.log('네이버 로그인 실패:', result.failureResponse);
+      }
+    } catch (e) {
+      console.error('네이버 로그인 에러:', e);
+    }
+  };
+
+  /** 카카오 로그인 */
+  const handleKakaoLogin = async () => {
+    try {
+      const result = await KakaoLogin.login();
+      const accessToken = result.accessToken;
+
+      loginMutation.mutate({
+        provider: 'KAKAO',
+        socialToken: accessToken,
+      });
+    } catch (e) {
+      console.error('KAKAO 로그인 실패:', e);
+    }
+  };
+
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    iosClientId: Constants.expoConfig.extra.googleIosKey,
+    androidClientId: Constants.expoConfig.extra.googleAndroidKey,
+    webClientId: Constants.expoConfig.extra.googleWebKey,
+  });
+
+  // Google 인증이 성공적으로 완료되었을 때 accessToken 추출
+  useEffect(() => {
+    if (response?.type === 'success') {
+      const accessToken = response.authentication.accessToken;
+
+      loginMutation.mutate({
+        provider: 'GOOGLE',
+        socialToken: accessToken,
+      });
+    } else if (response?.type === 'cancel') {
+      console.log('Google 로그인 취소됨.');
+    } else if (response?.type === 'error') {
+      console.error('Google 로그인 오류:', response.error);
+    }
+  }, [response]);
+
+  /** 구글 로그인 */
+  const handleGoogleLogin = async () => {
+    try {
+      if (request) {
+        await promptAsync();
+      } else {
+        console.warn('Google 로그인 요청이 아직 준비되지 않았습니다.');
+      }
+    } catch (e) {
+      console.error('GOOGLE 로그인 에러:', e);
+    }
   };
 
   return (
@@ -26,28 +104,34 @@ export default function AuthScreen() {
 
       <View style={styles.buttonGroup}>
         {/* Naver */}
-        <TouchableOpacity style={styles.button} onPress={() => handleLogin('Naver')}>
-          <MaterialCommunityIcons name="alpha-n-box" size={20} color="#000" />
-          <Text style={styles.buttonText}>네이버로 시작하기</Text>
-        </TouchableOpacity>
+        <Pressable
+          style={[styles.snsButton, { backgroundColor: '#03C75A' }]}
+          onPress={handleNaverLogin}
+        >
+          <Image source={require('@/assets/images/naver_logo.png')} style={styles.snsIcon} />
+          <Text style={[styles.snsText, { color: '#fff' }]}>네이버로 시작하기</Text>
+        </Pressable>
 
         {/* Kakao */}
-        <TouchableOpacity style={styles.button} onPress={() => handleLogin('Kakao')}>
-          <MaterialCommunityIcons name="message-text" size={20} color="#000" />
-          <Text style={styles.buttonText}>카카오로 시작하기</Text>
-        </TouchableOpacity>
+        <Pressable
+          style={[styles.snsButton, { backgroundColor: '#FEE500' }]}
+          onPress={handleKakaoLogin}
+        >
+          <Image source={require('@/assets/images/kakao_logo.png')} style={styles.snsIcon} />
+          <Text style={[styles.snsText, { color: '#000' }]}>카카오로 시작하기</Text>
+        </Pressable>
 
         {/* Google */}
-        <TouchableOpacity style={styles.button} onPress={() => handleLogin('Google')}>
-          <MaterialCommunityIcons name="google" size={20} color="#000" />
-          <Text style={styles.buttonText}>구글로 시작하기</Text>
-        </TouchableOpacity>
-
-        {/* Apple */}
-        <TouchableOpacity style={styles.button} onPress={() => handleLogin('Apple')}>
-          <MaterialCommunityIcons name="apple" size={20} color="#000" />
-          <Text style={styles.buttonText}>애플로 시작하기</Text>
-        </TouchableOpacity>
+        <Pressable
+          style={[
+            styles.snsButton,
+            { backgroundColor: '#fff', borderWidth: 1, borderColor: '#DADCE0' },
+          ]}
+          onPress={handleGoogleLogin}
+        >
+          <Image source={require('@/assets/images/google_logo.png')} style={styles.snsIcon} />
+          <Text style={[styles.snsText, { color: '#3C4043' }]}>구글로 시작하기</Text>
+        </Pressable>
       </View>
     </ScrollView>
   );
@@ -83,19 +167,23 @@ const styles = StyleSheet.create({
     width: '100%',
     gap: 10,
   },
-  button: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-    borderColor: '#E5E7EB',
-    borderWidth: 1,
+  snsButton: {
+    width: '100%',
+    height: 48,
     borderRadius: 12,
-    paddingVertical: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative',
   },
-  buttonText: {
-    fontSize: 16,
+  snsIcon: {
+    position: 'absolute',
+    width: 20,
+    height: 20,
+    left: 14,
+  },
+  snsText: {
+    fontSize: 15,
     fontWeight: '500',
-    color: '#111827',
+    textAlign: 'center',
   },
 });

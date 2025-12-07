@@ -4,7 +4,6 @@ import { useToastStore } from '@/store/commonStore';
 
 import { Ionicons } from '@expo/vector-icons';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
-import { jinny } from 'index';
 
 import { useEffect, useState } from 'react';
 import { Pressable, Share } from 'react-native';
@@ -50,7 +49,7 @@ export default function UserLayout() {
   const renderRightItems = () => {
     if (!profile) return [];
 
-    if (userId === jinny.id) {
+    if (userId === String(1234)) {
       return [
         <Pressable key="settings" onPress={() => router.replace('/my')}>
           <Ionicons name="settings-outline" size={26} />

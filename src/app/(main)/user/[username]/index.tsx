@@ -1,7 +1,6 @@
 import { Button } from '@/components';
 import { Profile } from '@/features/my/type';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { jinny } from 'index';
 import React, { useEffect, useState } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -94,7 +93,7 @@ export default function UserProfilePage() {
         {/* 하단 고정 버튼 */}
 
         <View style={[styles.bottomFixed, { bottom: insets.bottom }]}>
-          {userId === jinny.id ? (
+          {userId === String(1234) ? (
             <Button
               title="프로필 편집"
               variant="outline"

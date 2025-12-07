@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import { Pressable, ScrollView, StyleSheet } from 'react-native';
 
 import { Text, View } from 'react-native';
 
@@ -14,7 +14,7 @@ export default function DashboardScreen() {
         </View>
 
         {/* 오늘의 수영 기록 */}
-        <TouchableOpacity style={styles.card}>
+        <Pressable style={styles.card}>
           <View style={styles.cardHeader}>
             <Text style={styles.cardTitle}>오늘의 수영 기록</Text>
             <Text style={styles.arrow}>›</Text>
@@ -40,10 +40,10 @@ export default function DashboardScreen() {
               </View>
             </View>
           </View>
-        </TouchableOpacity>
+        </Pressable>
 
         {/* 수영 캘린더 */}
-        <TouchableOpacity style={styles.card}>
+        <Pressable style={styles.card}>
           <View style={styles.cardHeader}>
             <Text style={styles.cardTitle}>수영 캘린더</Text>
             <Text style={styles.arrow}>›</Text>
@@ -68,10 +68,10 @@ export default function DashboardScreen() {
               <Text style={styles.date}>20</Text>
             </View>
           </View>
-        </TouchableOpacity>
+        </Pressable>
 
         {/* 목표 진행률 */}
-        <TouchableOpacity style={styles.card}>
+        <Pressable style={styles.card}>
           <View style={styles.cardHeader}>
             <Text style={styles.cardTitle}>목표 진행률</Text>
             <Text style={styles.arrow}>›</Text>
@@ -86,10 +86,10 @@ export default function DashboardScreen() {
               <Text style={styles.goalValue}>61%</Text>
             </View>
           </View>
-        </TouchableOpacity>
+        </Pressable>
 
         {/* 날씨 현황 */}
-        <TouchableOpacity style={styles.card}>
+        <Pressable style={styles.card}>
           <View style={styles.cardHeader}>
             <Text style={styles.cardTitle}>날씨 현황</Text>
             <Text style={styles.arrow}>›</Text>
@@ -112,7 +112,7 @@ export default function DashboardScreen() {
               <Text style={styles.weatherLabel}>즉도강</Text>
             </View>
           </View>
-        </TouchableOpacity>
+        </Pressable>
       </View>
     </ScrollView>
   );

@@ -1,6 +1,6 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
-import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 
 export default function EditRecordScreen() {
   const router = useRouter();
@@ -57,13 +57,13 @@ export default function EditRecordScreen() {
           />
         </View>
 
-        <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+        <Pressable style={styles.saveButton} onPress={handleSave}>
           <Text style={styles.saveButtonText}>저장하기</Text>
-        </TouchableOpacity>
+        </Pressable>
 
-        <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
+        <Pressable style={styles.deleteButton} onPress={handleDelete}>
           <Text style={styles.deleteButtonText}>기록 삭제</Text>
-        </TouchableOpacity>
+        </Pressable>
       </View>
     </ScrollView>
   );

@@ -1,47 +1,26 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import {
-  deleteUser,
-  getUserInfo,
-  getUserPostList,
-  postSignup,
-  putUpdateUser,
-} from '@/api/endpoints/user';
+import { deleteUser, getUserInfo, getUserPostList, putUpdateUser } from '@/api/endpoints/user';
 import { useAuthStore } from '@/store/authStore';
 
 /**
- * 회원 정보 조회 쿼리 (GET /user)
+ * 내 정보 조회 쿼리 (GET /users/me)
  */
 export const useUserInfoQuery = () => {
-  // Zustand 스토어에서 accessToken이 있는지 확인
   const isLoggedIn = !!useAuthStore((state) => state.accessToken);
+
+  console.log('💀 isLoggedIn', isLoggedIn);
 
   return useQuery({
     queryKey: ['user', 'info'],
     queryFn: getUserInfo,
-    // enabled: false 이면 자동 실행 안 함
     enabled: isLoggedIn, // 로그인 상태일 때만 API 호출
     staleTime: 1000 * 60 * 5, // 5분
   });
 };
 
 /**
- * 회원가입 뮤테이션 (POST /user)
- */
-export const useSignupMutation = () => {
-  return useMutation({
-    mutationFn: postSignup,
-    onSuccess: (data) => {
-      // 회원가입 성공
-      console.log('회원가입 성공:', data.userId);
-      // TODO: (선택) 회원가입 성공 시 바로 로그인 처리 (useLoginMutation.mutate(...))
-      // 또는 로그인 화면으로 이동
-    },
-  });
-};
-
-/**
- * 회원 정보 수정 뮤테이션 (PUT /user)
+ * 내 정보 수정 뮤테이션 (PUT /users/me)
  */
 export const useUpdateUserMutation = () => {
   const queryClient = useQueryClient();
@@ -60,7 +39,7 @@ export const useUpdateUserMutation = () => {
 };
 
 /**
- * 회원 탈퇴 뮤테이션 (DELETE /user)
+ * 회원 탈퇴 뮤테이션 (DELETE /user/me)
  */
 export const useDeleteUserMutation = () => {
   const { logout } = useAuthStore();

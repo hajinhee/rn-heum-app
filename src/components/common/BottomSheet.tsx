@@ -6,7 +6,8 @@ import { useBottomSheetStore } from '@/store/commonStore';
 
 export default function BottomSheetModal() {
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const { index, content, close } = useBottomSheetStore();
+  const { index, contentStack, close } = useBottomSheetStore();
+  const content = contentStack[contentStack.length - 1] ?? null;
 
   const renderBackdrop = useCallback(
     (props: any) => (
@@ -32,12 +33,14 @@ export default function BottomSheetModal() {
       onClose={close}
       enablePanDownToClose
       enableDynamicSizing={false}
-      snapPoints={['30%']}
+      snapPoints={['72%']}
       backdropComponent={renderBackdrop}
       handleIndicatorStyle={styles.handleIndicator}
+      handleComponent={null} // 기본 손잡이 제거
       backgroundStyle={styles.background}
+      enableContentPanningGesture={false} // 내부 스크롤 외 터치로 Sheet 움직이지 않음
     >
-      <BottomSheetView style={styles.container}>{content}</BottomSheetView>
+      <BottomSheetView style={styles.sheetContent}>{content}</BottomSheetView>
     </BottomSheet>
   );
 }
@@ -49,11 +52,16 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 32,
   },
   handleIndicator: {
-    width: 40,
+    width: 38,
     height: 5,
     borderRadius: 3,
-    backgroundColor: '#ccc',
-    marginTop: 5,
+    backgroundColor: '#ddd',
   },
-  container: {},
+  sheetContent: {
+    flex: 1,
+    overflow: 'hidden',
+    borderTopLeftRadius: 32,
+    borderTopRightRadius: 32,
+    backgroundColor: '#fff',
+  },
 });

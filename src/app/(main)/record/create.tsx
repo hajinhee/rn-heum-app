@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 
 export default function CreateRecordScreen() {
   const router = useRouter();
@@ -49,9 +49,9 @@ export default function CreateRecordScreen() {
           />
         </View>
 
-        <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+        <Pressable style={styles.saveButton} onPress={handleSave}>
           <Text style={styles.saveButtonText}>저장하기</Text>
-        </TouchableOpacity>
+        </Pressable>
       </View>
     </ScrollView>
   );

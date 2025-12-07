@@ -1,7 +1,8 @@
+import { Button } from '@/components';
+import { useAlertStore } from '@/store/commonStore';
 import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useRef } from 'react';
-import { Animated, Pressable, StyleSheet, Text, View } from 'react-native';
-import { useAlertStore } from '@/store/commonStore';
+import { Animated, StyleSheet, Text, View } from 'react-native';
 
 export function AlertModal() {
   const { isOpen, type, title, message, confirmText, cancelText, onConfirm, onCancel, close } =
@@ -42,26 +43,31 @@ export function AlertModal() {
 
         <View style={[styles.buttonRow, !showCancel && { justifyContent: 'center' }]}>
           {showCancel && (
-            <Pressable
-              style={[styles.button, styles.cancel]}
+            <Button
+              title={cancelText || '취소'}
+              variant="gray"
               onPress={() => {
                 onCancel?.();
                 close();
               }}
-            >
-              <Text style={styles.cancelText}>{cancelText}</Text>
-            </Pressable>
+              style={{ flex: 1, marginRight: 8 }}
+            />
           )}
 
-          <Pressable
-            style={[styles.button, { backgroundColor: color }, !showCancel && { width: '65%' }]}
+          <Button
+            title={confirmText || '확인'}
+            variant="filled"
             onPress={() => {
               onConfirm?.();
               close();
             }}
-          >
-            <Text style={styles.confirmText}>{confirmText}</Text>
-          </Pressable>
+            style={{
+              flex: 1,
+              backgroundColor: color,
+              ...(!showCancel ? { width: '65%' } : {}),
+            }}
+            textStyle={{ color: '#fff' }}
+          />
         </View>
       </Animated.View>
     </Animated.View>
@@ -119,25 +125,5 @@ const styles = StyleSheet.create({
   buttonRow: {
     flexDirection: 'row',
     width: '100%',
-  },
-  button: {
-    flex: 1,
-    borderRadius: 10,
-    paddingVertical: 12,
-    alignItems: 'center',
-  },
-  cancel: {
-    backgroundColor: '#F3F3F3',
-    marginRight: 8,
-  },
-  cancelText: {
-    color: '#333',
-    fontWeight: '500',
-    fontSize: 15,
-  },
-  confirmText: {
-    color: '#fff',
-    fontWeight: '600',
-    fontSize: 15,
   },
 });
