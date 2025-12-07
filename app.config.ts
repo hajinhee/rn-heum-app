@@ -90,9 +90,16 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     kakaoAppKey: process.env.KAKAO_NATIVE_APP_KEY,
     kakaoRestKey: process.env.KAKAO_REST_API_KEY,
     kakaoJsKey: process.env.KAKAO_JS_KEY,
+
     // naver
     naverClientKey: process.env.NAVER_CLIENT_ID,
     naverSecretKey: process.env.NAVER_CLIENT_SECRET,
+
+    // google
+    googleWebKey: process.env.GOOGLE_WEB_CLIENT_ID,
+    googleIosKey: process.env.GOOGLE_IOS_CLIENT_ID,
+    googleAndroidKey: process.env.GOOGLE_ANDROID_CLIENT_ID,
+
     // server URL
     apiBaseUrl: process.env.SERVER_URL,
     eas: {
