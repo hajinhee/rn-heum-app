@@ -5,12 +5,14 @@
 
 <br>
 
+## 🎥 앱 주요 화면 (GIF Preview)
+
 <p align="center">
-  <img src="/images/heum-1.gif" width="200" />
-  <img src="/images/heum-2.gif" width="200" />
-  <img src="/images/heum-3.gif" width="200" />
-  <img src="/images/heum-4.gif" width="200" />
-  <img src="/images/heum-5.gif" width="200" />
+  <!-- <img src="/images/heum-1.gif" width="220" /> -->
+  <img src="/images/heum-2.gif" width="220" />
+  <img src="/images/heum-3.gif" width="220" />
+  <img src="/images/heum-4.gif" width="220" />
+  <!-- <img src="/images/heum-5.gif" width="220" /> -->
 </p>
 
 <br>
