@@ -1,8 +1,17 @@
 import { Button } from '@/components';
 import { Profile } from '@/features/my/type';
+import { useUserInfoQuery } from '@/hooks/queries/useUserMutations';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Image,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function UserProfilePage() {
@@ -11,23 +20,31 @@ export default function UserProfilePage() {
   const { username, userId } = useLocalSearchParams<{ username: string; userId: string }>();
 
   const [profile, setProfile] = useState<Profile>(null);
-  const [loading, setLoading] = useState(true);
+
+  const { data, isLoading, error } = useUserInfoQuery();
 
   /** 사용자 프로필 정보 불러오기 */
   useEffect(() => {
-    const fetchUserProfile = async () => {
-      try {
-        const res = await fetch(`/users/${userId}`);
-        const data = await res.json();
-        setProfile(data.user);
-      } catch {
-      } finally {
-        setLoading(false);
-      }
+    if (!data) return; // 1. data 로딩 전이면 아무것도 안 함
+
+    const profileData: Profile = {
+      user: {
+        id: data.id,
+        email: data.email,
+        profile: data.profile,
+      },
+      postCount: 12,
+      followers: 52,
+      following: 34,
+      isFollowing: false,
+      postIds: [1, 2, 3],
+      commentIds: [10, 11, 12],
     };
 
-    fetchUserProfile();
-  }, [userId]);
+    setProfile(profileData); // 2. profile 설정
+
+    console.log('data.profile', data.profile);
+  }, [data]); // 4. data 변경될 때만 실행
 
   /** 팔로우 신청/취소 */
   const handleToggleFollow = () => {
@@ -39,15 +56,23 @@ export default function UserProfilePage() {
       setProfile((prev) => ({ ...prev, isFollowing: true }));
     }
   };
-  if (loading || !profile) {
-    return <View style={{ flex: 1, backgroundColor: '#fff' }} />;
+
+  if (isLoading || !profile) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#FFFFFF" />
+      </View>
+    );
   }
 
   return (
     <>
       <View style={styles.container}>
         {/* 프로필 이미지 */}
-        <Image source={{ uri: profile.profileImageUrl }} style={styles.backgroundImage} />
+        <Image
+          source={{ uri: data.profile.profileImageUrl.replace(/^http:/, 'https:') }}
+          style={styles.backgroundImage}
+        />
 
         {/* 카드 전체가 스크롤되는 영역 */}
         <ScrollView
@@ -62,8 +87,8 @@ export default function UserProfilePage() {
               <View style={styles.handleBar} />
             </View>
 
-            <Text style={styles.name}>{profile.nickname}</Text>
-            <Text style={styles.nickname}>{profile.email}</Text>
+            <Text style={styles.name}>{data.profile.nickname}</Text>
+            <Text style={styles.nickname}>{data.email}</Text>
 
             <View style={styles.statsContainer}>
               <Pressable
@@ -71,7 +96,7 @@ export default function UserProfilePage() {
                 onPress={() =>
                   router.push({
                     pathname: '/user/[username]/post',
-                    params: { username: profile.nickname, userId: profile.id },
+                    params: { username: data.profile.nickname, userId: data.id },
                   })
                 }
               >
@@ -93,7 +118,7 @@ export default function UserProfilePage() {
         {/* 하단 고정 버튼 */}
 
         <View style={[styles.bottomFixed, { bottom: insets.bottom }]}>
-          {userId === String(1234) ? (
+          {userId === String(profile.user.id) ? (
             <Button
               title="프로필 편집"
               variant="outline"
@@ -165,5 +190,12 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 20,
     right: 20,
+  },
+
+  loadingContainer: {
+    flex: 1,
+    backgroundColor: '#4285EA',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
