@@ -18,6 +18,51 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+export const mockComments: Record<number, CommentData[]> = {
+  1: [
+    {
+      id: 1,
+      content: '와 기록 고생했다!',
+      createdAt: '2024-06-01T10:00:00',
+      user: {
+        id: 2,
+        email: 'test2@example.com',
+        nickname: '장의동 거북이',
+        profileImageUrl: 'https://i.pinimg.com/736x/df/a0/47/dfa0473803e06a8725ee85491b0dc4ad.jpg',
+      },
+    },
+    {
+      id: 2,
+      content: '대박 👍',
+      createdAt: '2024-06-01T10:30:00',
+      user: {
+        id: 3,
+        email: 'test3@example.com',
+        nickname: '은행동 돌고래',
+        profileImageUrl: 'https://i.pinimg.com/736x/1d/c2/e3/1dc2e380a7d0de12a8c12ba74c14a7bf.jpg',
+      },
+    },
+  ],
+
+  2: [
+    {
+      id: 3,
+      content: '이 수영장 좋아보여요!',
+      createdAt: '2024-06-02T09:20:00',
+      user: {
+        id: 4,
+        email: 'test4@example.com',
+        nickname: '초록마을 물개',
+        profileImageUrl: 'https://i.pinimg.com/736x/23/b5/c7/23b5c7d072219559a686e2ec09b748ac.jpg',
+      },
+    },
+  ],
+};
+
+function getMockComments(postId: string) {
+  return mockComments[postId] || [];
+}
+
 export default function CommentModal() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
@@ -32,20 +77,29 @@ export default function CommentModal() {
   const { open } = useAlertStore();
 
   /** 댓글 블러오기 */
+  // useEffect(() => {
+  //   const getComments = async () => {
+  //     try {
+  //       const res = await fetch(`/posts/${postId}/comments`);
+  //       if (!res.ok) throw new Error(`서버 오류: ${res.status}`);
+  //       const data = await res.json();
+  //       setComments(data.comments);
+  //     } catch (err) {
+  //       console.error(err);
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   };
+  //   getComments();
+  // }, [postId]);
+
   useEffect(() => {
-    const getComments = async () => {
-      try {
-        const res = await fetch(`/posts/${postId}/comments`);
-        if (!res.ok) throw new Error(`서버 오류: ${res.status}`);
-        const data = await res.json();
-        setComments(data.comments);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    getComments();
+    setIsLoading(true);
+
+    const comments = getMockComments(postId);
+    setComments(comments);
+
+    setIsLoading(false);
   }, [postId]);
 
   /** 댓글 추가 핸들러 */

@@ -17,19 +17,28 @@ export default function UserLayout() {
 
   const { show } = useToastStore();
 
+  const DUMMY_PROFILE: Profile = {
+    user: {
+      id: 1,
+      email: 'test@example.com',
+      profile: {
+        id: 1,
+        nickname: '테스트 유저',
+        profileImageUrl: 'https://picsum.photos/200',
+        bio: '테스트 bio',
+      },
+    },
+    postCount: 12,
+    followers: 52,
+    following: 34,
+    isFollowing: false,
+    postIds: [1, 2, 3],
+    commentIds: [10, 11, 12],
+  };
+
   /** 사용자 프로필 정보 불러오기 */
   useEffect(() => {
-    const fetchUserProfile = async () => {
-      try {
-        const res = await fetch(`/users/${userId}`);
-        const data = await res.json();
-        setProfile(data.user);
-      } catch (e) {
-        console.warn('🔵 프로필 불러오기 오류:', e);
-      }
-    };
-
-    fetchUserProfile();
+    setProfile(DUMMY_PROFILE);
   }, [userId]);
 
   /** 프로필 링크 공유 */
@@ -49,7 +58,7 @@ export default function UserLayout() {
   const renderRightItems = () => {
     if (!profile) return [];
 
-    if (userId === String(1234)) {
+    if (userId === String(1)) {
       return [
         <Pressable key="settings" onPress={() => router.replace('/my')}>
           <Ionicons name="settings-outline" size={26} />
@@ -109,11 +118,11 @@ export default function UserLayout() {
               label: '프로필 공유하기',
               onPress: () => {
                 setShowActionSheet(false);
-                setTimeout(() => handleShare(profile.nickname), 200);
+                setTimeout(() => handleShare(profile.user.profile.nickname), 200);
               },
             },
             {
-              label: `피드에서 ${profile.nickname} 숨기기`,
+              label: `피드에서 ${profile.user.profile.nickname} 숨기기`,
               onPress: () =>
                 show({
                   message: `전체 게시물이 숨겨졌어요`,

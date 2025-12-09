@@ -9,19 +9,22 @@ export type Token = {
 };
 
 export type Profile = {
-  id: number;
-  userId: number;
-  nickname: string;
-  bio: string;
-  email: string;
-  profileImageUrl: string;
-
+  user: {
+    id: number;
+    email: string;
+    profile: {
+      id: number;
+      nickname: string;
+      profileImageUrl: string;
+      bio: string;
+    };
+  };
   postCount: number;
   followers: number;
   following: number;
   isFollowing: boolean;
-  postIds: [];
-  commentIds: [];
+  postIds: number[];
+  commentIds: number[];
 };
 
 export type Suggestion = {

@@ -2,10 +2,10 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
+import { Stack, usePathname, useRouter } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import 'global.css';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Provider as PaperProvider } from 'react-native-paper';
 export { ErrorBoundary } from 'expo-router';
@@ -23,6 +23,13 @@ const queryClient = new QueryClient({
 
 // 스플래시 자동 숨김 방지(초기 비동기 작업 완료 시점까지 유지)
 SplashScreen.preventAutoHideAsync();
+
+const SCREENS: { name: string; options: any }[] = [
+  { name: '(onboarding)', options: { headerShown: false } },
+  { name: '(auth)', options: { headerShown: false } },
+  { name: '(main)', options: { headerShown: false } },
+  { name: '(modal)', options: { presentation: 'modal', headerShown: false } },
+];
 
 export default function RootLayout() {
   const [fontsLoaded, fontError] = useFonts({
@@ -43,18 +50,11 @@ export default function RootLayout() {
   }, [fontsLoaded, storesHydrated]);
 
   if (!fontsLoaded || !storesHydrated) return null;
-
-  const accessToken = useAuthStore.getState().accessToken;
-  const isAuthenticated = !!accessToken;
-  const onboardingCompleted = useAppStore.getState().onboardingCompleted;
-
-  const target = !onboardingCompleted ? '(onboarding)' : isAuthenticated ? '(tabs)' : '(auth)';
-
   return (
     <GestureHandlerRootView>
       <QueryClientProvider client={queryClient}>
         <PaperProvider>
-          <RootLayoutNav initialRouteName={target} />
+          <RootLayoutNav />
         </PaperProvider>
       </QueryClientProvider>
     </GestureHandlerRootView>
@@ -89,10 +89,39 @@ function useStoresHydrated(): boolean {
   return ready;
 }
 
-function RootLayoutNav({ initialRouteName }: { initialRouteName: string }) {
+function RootLayoutNav() {
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const accessToken = useAuthStore((s) => s.accessToken);
+  const isAuthenticated = !!accessToken;
+  const { onboardingCompleted, setOnboardingCompleted } = useAppStore();
+
+  const isDev = __DEV__;
+  const needsOnboarding = isDev ? true : !onboardingCompleted;
+
+  // 개발 모드에서는 무조건 온보딩 완료 처리
+  useEffect(() => {
+    if (!isDev && isAuthenticated && !onboardingCompleted) {
+      setOnboardingCompleted();
+    }
+  }, [isDev, isAuthenticated, onboardingCompleted, setOnboardingCompleted]);
+
+  const target = needsOnboarding ? '/(onboarding)' : isAuthenticated ? '/(tabs)' : '/(auth)';
+
+  const prevTargetRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (prevTargetRef.current === target) return;
+    if (!pathname?.startsWith(target)) {
+      router.replace(target);
+    }
+    prevTargetRef.current = target;
+  }, [pathname, target, router]);
+
   return (
     <ThemeProvider value={DefaultTheme}>
-      <Stack initialRouteName={initialRouteName}>
+      <Stack>
         <Stack.Screen name="(onboarding)" options={{ headerShown: false }} />
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />

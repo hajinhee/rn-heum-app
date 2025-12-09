@@ -9,8 +9,6 @@ import { useAuthStore } from '@/store/authStore';
 export const useUserInfoQuery = () => {
   const isLoggedIn = !!useAuthStore((state) => state.accessToken);
 
-  console.log('💀 isLoggedIn', isLoggedIn);
-
   return useQuery({
     queryKey: ['user', 'info'],
     queryFn: getUserInfo,
