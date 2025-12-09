@@ -1,8 +1,17 @@
 # Heum App 🏊‍
 
-> 수영 기록 및 소셜(피드) 기능을 제공하는 크로스플랫폼(Android, iOS, Web) 앱입니다.
+> 수영 기록 및 소셜(피드) 기능을 제공하는 모바일 (Android, iOS) 앱입니다.
 >
-> 이 문서는 `팀 허우적 허우적`을 위한 메인 프로젝트 가이드입니다.
+
+<br>
+
+<p align="center">
+  <img src="/images/heum-1.gif" width="200" />
+  <img src="/images/heum-2.gif" width="200" />
+  <img src="/images/heum-3.gif" width="200" />
+  <img src="/images/heum-4.gif" width="200" />
+  <img src="/images/heum-5.gif" width="200" />
+</p>
 
 <br>
 
@@ -16,33 +25,43 @@
 * **서버 상태 관리**: `React Query (TanStack Query)`
 * **클라이언트 상태 관리**: `Zustand`
 * **언어**: `TypeScript`
+  
+
+> 선택 이유  
+- Expo 기반으로 Android/iOS를 동시에 개발하며 OTA 업데이트를 활용할 수 있습니다.  
+- Expo Router v3로 파일 기반 라우팅을 적용해 화면 구조가 명확해지고 유지보수가 쉬워졌습니다.  
+- NativeWind로 RN 스타일링 생산성을 크게 높였습니다.  
+- React Query는 서버 상태를 안전하고 일관성 있게 관리합니다.  
+- Zustand는 BottomSheet·전역 UI 상태처럼 “가벼운 전역 상태” 관리에 적합합니다.
 
 <br>
 
 ## 🚀 2. 시작하기 (Getting Started)
 
-### 의존성 설치
+### 개발 서버 실행 (Dev Client 기반)
+
+프로젝트 설정 변경 후에는 항상 캐시를 초기화하고 Dev Client로 실행하는 것을 권장합니다.
 
 ```bash
+# 1. 의존성 설치
 npm install
-```
-### 개발 서버 실행
-babel.config.js 또는 tailwind.config.js 수정 후에는 항상 캐시를 초기화하는 것이 좋습니다.
 
-```bash
-# 캐시를 비우고 서버 시작 (권장)
-npx expo start -c
+# 2. Dev Client 빌드 (네이티브 기능 테스트용)
+npx expo run:ios
+npx expo run:android
 
-# 또는 npm 스크립트 (package.json에 등록된)
-npm run start --clear
-```
+# 3. 실행
+npx expo start --dev-client
 
-### 플랫폼별 실행
+# 4. 플랫폼별 실행
 서버 실행 후 터미널에서 해당 키를 누릅니다.
 
 - **Android**: a 키
 - **iOS**: i 키
 - **Web**: w 키
+```
+
+<br>
 
 ## 📂 3. 프로젝트 구조 철학 (Architecture)
 
@@ -61,13 +80,12 @@ npm run start --clear
 
 > **"그 화면이 어떻게 동작하는지"**를 정의합니다. (팀 협업의 영역)
 
-* **`src/features/` (⭐ 핵심)**
-    * 팀 협업 시 **충돌(Conflict)을 방지**하기 위해 도메인(기능)별로 코드를 분리합니다.
-    * `auth` 담당자는 `src/features/auth/` 폴더만 수정하고, `record` 담당자는 `src/features/record/` 폴더만 수정하는 것을 원칙으로 합니다.
+* **`src/features/`**
+    * 도메인(기능)별로 코드를 분리합니다.
     * 각 `feature` 폴더는 자신의 `api`, `hooks`, `components`를 가질 수 있습니다.
 
 * **`src/components/common/`**
-    * **NativeWind**를 기반으로 스타일링된, 앱 전역에서 재사용되는 공통 컴M포넌트입니다.
+    * **NativeWind**를 기반으로 스타일링된, 앱 전역에서 재사용되는 공통 컴포넌트입니다.
     * 예: `Button.tsx`, `Card.tsx`, `Input.tsx`, `Modal.tsx` 등
 
 * **`src/store/`**
@@ -117,7 +135,7 @@ heum-app/
 │   ├── components/
 │   │   └── common/         # NativeWind 기반 공통 컴포넌트
 │   │
-│   ├── features/           # (C) ⭐ 팀 협업을 위한 기능별 폴더
+│   ├── features/           
 │   │   ├── auth/
 │   │   ├── calendar/
 │   │   ├── dashboard/
@@ -140,9 +158,7 @@ heum-app/
 * **Q: 스타일이 적용되지 않거나 `className`이 작동하지 않아요.**
     * A: `tailwind.config.js`의 `content` 배열에 `app/`과 `src/` 경로가 올바르게 추가되었는지 확인하세요.
     * A: `babel.config.js`에 `plugins: ['nativewind/babel']`이 추가되었는지 확인하세요.
-    * A: 설정 변경 후에는 **반드시 `npx expo start -c`로 캐시를 비우고 재시작**하세요.
-* **Q: Expo Router가 새 파일을 인식하지 못해요.**
-    * A: `expo-router`는 가끔 새 파일을 즉시 인식하지 못합니다. `npx expo start -c`로 재시작하세요.
+    * A: 설정 변경 후에는 **반드시 캐시를 비우고 재시작**하세요.
 * **Q: `app/` 폴더에 파일을 만들었는데 탭이나 헤더가 이상해요.**
     * A: 해당 파일이 속한 그룹(폴더)의 `_layout.tsx` 파일(`Stack` 또는 `Tabs`)에 `<Stack.Screen name="..."/>`으로 올바르게 등록되었는지 확인하세요.
 
